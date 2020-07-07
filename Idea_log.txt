@@ -1,0 +1,20 @@
+CLI: give options for self.gender and preferred gender.
+
+(Stretch) Parameters to add:           
+-  t.string :gender #[female,male,non-binary,alien]
+-  t.string :preferred_gender
+-  RANKED order for artists
+
+
+Things to accomplish NOW:
+1. Finish listing basic attributes for existing classes
+2. Delegate Major responsibilities
+    - Replace Songs & User_Songs with Band & User_Bands classes/tables - Jeff
+    - Setup Connection class - Jeff
+    - Implement helper method to weigh popularity & connection strength, pulled from Spotify API - Luis
+    - Setup CLI - Luis & Eli
+    - Setup CLI connection to database (figure out how to pull from API) - Eli
+    - Add methods to Users and Artists to pull out relevant info, as necessary - Jeff
+    - Implement Match methods - Eli
+
+
