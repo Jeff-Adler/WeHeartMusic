@@ -10,19 +10,35 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_07_120536) do
+ActiveRecord::Schema.define(version: 2020_07_08_143817) do
 
-  create_table "songs", force: :cascade do |t|
+  create_table "artists", force: :cascade do |t|
     t.string "name"
+    t.integer "popularity"
   end
 
-  create_table "user_songs", force: :cascade do |t|
+  create_table "connections", force: :cascade do |t|
+    t.integer "connector_id"
+    t.integer "connectee_id"
+    t.float "strength"
+  end
+
+  create_table "rejections", force: :cascade do |t|
+    t.integer "rejector_id"
+    t.integer "rejectee_id"
+    t.float "strength"
+  end
+
+  create_table "user_artists", force: :cascade do |t|
     t.integer "user_id"
-    t.integer "song_id"
+    t.integer "artist_id"
   end
 
   create_table "users", force: :cascade do |t|
     t.string "name"
+    t.integer "age"
+    t.string "city"
+    t.string "email"
   end
 
 end
