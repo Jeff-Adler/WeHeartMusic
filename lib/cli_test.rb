@@ -4,11 +4,23 @@ require_relative '../config/environment'
 require_relative '../app/models/user.rb'
 require_relative '../app/models/artist.rb'
 require_relative '../app/models/user_artist.rb'
+require_relative '../app/models/genre.rb'
+require_relative '../app/models/artist_genre.rb'
+require_relative '../app/models/connection.rb'
+require_relative '../app/models/rejection.rb'
 # require 'tty-prompt'
 # prompt = TTY::Prompt.new
 
 # User.destroy_all
 # Artist.destroy_all
+
+# User.destroy_all
+# Artist.destroy_all
+# UserArtist.destroy_all
+# Connection.destroy_all
+# Rejection.destroy_all
+# Genre.destroy_all
+# ArtistGenre.destroy_all
 
 def help
     puts "Options:"
@@ -25,6 +37,7 @@ def choose_artist(nu)
    puts "Choose an artist you'd like to add to your favorites list:"
    artist = gets.chomp.to_s
    ao = RSpotify::Artist.search(artist)
+   
   
     puts "Confirming choice #{ao.first.name} (y/n)?"
     answer = gets.chomp.to_s
@@ -32,8 +45,33 @@ def choose_artist(nu)
     if answer == "n"
         choose_artist(nu)
     elsif answer == "y"
-        na = Artist.create(name: ao.first.name, popularity: ao.first.popularity)
-        UserArtist.create(user: nu, artist: na)
+        match = Artist.all.find do |a|
+            a.name == ao.first.name
+        end
+        #artist does not exist
+        if match == nil
+            na = Artist.create(name: ao.first.name, popularity: ao.first.popularity)
+            UserArtist.create(user: nu, artist: na)
+            #we have to check whether to make NEW genre entries or JUST artistgenre connections
+            artist_object = ao.first
+            #this will loop through every genre of artist the user selected
+            artist_object.genres.each do |genre_element|
+                #this will loop through every genre in the database
+                genre_match = Genre.all.find do |g|
+                    g.name == genre_element
+                end
+                    #this will check if the genre was found in the database. If nil, it means it was not
+                    if genre_match == nil
+                        genre_var = Genre.create(name: genre_element)
+                        ArtistGenre.create(artist: na, genre: genre_var)
+                    else
+                        ArtistGenre.create(artist: na, genre: genre_match)
+                    end
+            end
+        else
+            UserArtist.create(user: nu, artist: match)
+        end
+  
     else
         puts "Invalid answer. Try again."
         choose_artist(nu)
