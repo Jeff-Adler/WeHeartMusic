@@ -4,11 +4,18 @@ require_relative '../config/environment'
 require_relative '../app/models/user.rb'
 require_relative '../app/models/artist.rb'
 require_relative '../app/models/user_artist.rb'
+require_relative '../app/models/connection.rb'
+require_relative '../app/models/rejection.rb'
 # require 'tty-prompt'
 # prompt = TTY::Prompt.new
 
 # User.destroy_all
 # Artist.destroy_all
+# UserArtist.destroy_all
+# Connection.destroy_all
+# Rejection.destroy_all
+
+
 
 def help
     puts "Options:"
@@ -20,20 +27,28 @@ def help
     puts "'help' - return all options"
 end
 
-
 def choose_artist(nu)
    puts "Choose an artist you'd like to add to your favorites list:"
    artist = gets.chomp.to_s
    ao = RSpotify::Artist.search(artist)
-  
+    
     puts "Confirming choice #{ao.first.name} (y/n)?"
     answer = gets.chomp.to_s
 
     if answer == "n"
         choose_artist(nu)
     elsif answer == "y"
-        na = Artist.create(name: ao.first.name, popularity: ao.first.popularity)
-        UserArtist.create(user: nu, artist: na)
+        match = Artist.all.find do |a|
+            a.name == ao.first.name
+        end
+        #artist does not exist
+        if match == nil
+            na = Artist.create(name: ao.first.name, popularity: ao.first.popularity)
+            UserArtist.create(user: nu, artist: na)
+        else
+            UserArtist.create(user: nu, artist: match)
+        end
+  
     else
         puts "Invalid answer. Try again."
         choose_artist(nu)
@@ -91,13 +106,13 @@ def welcome
 end
 
 
-#choose_artist
-#new_user
+# #new_user
 
-#welcome
-
+welcome
 
 
 
 
-#binding.pry
+
+# #binding.pry
+

@@ -8,4 +8,4 @@ gem "pry"
 gem "require_all"
 gem "rspotify"
 gem "activesupport"
-gem "tty-prompt"
+gem 'tty-prompt'
