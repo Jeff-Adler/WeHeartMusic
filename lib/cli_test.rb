@@ -228,18 +228,18 @@ def print_matches(user)
 end
 
 #This method lets the user decide if they will connect with or reject a propsect
-def connect_or_reject(user,prospect)
-    puts "Would you like to connect with this prospect? (y/n)"
-    response = gets.chomp.to_s
-    if response == "y"
-        Connection.create(connector: user, connectee: prospect, strength: connection_calculator(user,prospect))
-    elsif response == "n"
-        Rejection.create(rejector: user,rejectee: prospect, strength: connection_calculator(user,prospect))
-    else
-        puts "I didn't quite get that"
-        connect_or_reject(user, prospect)
-    end
-end
+# def connect_or_reject(user,prospect)
+#     puts "Would you like to connect with this prospect? (y/n)"
+#     response = gets.chomp.to_s
+#     if response == "y"
+#         Connection.create(connector: user, connectee: prospect, strength: connection_calculator(user,prospect))
+#     elsif response == "n"
+#         Rejection.create(rejector: user,rejectee: prospect, strength: connection_calculator(user,prospect))
+#     else
+#         puts "I didn't quite get that"
+#         connect_or_reject(user, prospect)
+#     end
+# end
 
 #This method will find a prospect for the user
 def find_prospects(user_1)

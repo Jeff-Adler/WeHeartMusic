@@ -98,6 +98,25 @@ def self.change_top_10
             end
 end
 
+def self.find_connections
+
+    #Presents the user in the database with strongest connection, that you have not yet encountered
+    prospect = find_prospects(@@user)
+
+    #This prompts you to connect or reject with prospect, assuming a prospect was found     
+    if prospect != nil
+        self.connect_or_pass(prospect)
+        answer = @@prompt.select("Want to find more prospects?",["Yes","No"],required: true)
+        case answer
+            when "Yes"
+                find_connections            
+            else
+                puts "Returning to the main menu."
+            end
+    else
+        puts "Let's go back to the main menu."
+    end
+end
 
     def self.inner_menu
         answer = @@prompt.select("Welcome to the menu #{@@user.name}, what would you like to do?", ["View Top 10","View Connections & Matches","Add Artists","Find Connections", "See my account information","Return to login screen"], required: true)
@@ -123,30 +142,8 @@ end
         when "Find Connections"
             puts "Let's find people with similar music tastes to you!"
 
-            #finds the user in the database with strongest connection, that you have not yet encountered
-            prospect = find_prospects(@@user)
-
-            #This prompts you to connect or reject with prospect, assuming a prospect was found     
-            if prospect != nil
-                connect_or_reject(@@user, prospect)
-            end
-
-            #This will allow them to continue finding to prospects until they decide to stop
-            puts "Want to find more prospects? (y/n)"
-            response = gets.chomp.to_s
-            while response == "y" do
-                prospect = find_prospects(@@user)
-
-            #This will prompt you to connect or reject the prospect, or it will exit the loop if there are no remaining prospects
-            if prospect != nil
-                connect_or_reject(@@user, prospect)
-            else
-                break
-            end
-    
-            puts "Want to find more prospects? (y/n)"
-            response = gets.chomp.to_s
-        end
+            self.find_connections
+         
         when "See my account information"
             self.display_account_info
         else
@@ -179,45 +176,48 @@ def self.choose_artist
     ao_hash["try again"] = "try again"
      answer = @@prompt.select("Please Confirm your choice:", ao_hash,required: true)
      case answer
-     when "try again"
-        puts "Sorry, let's try again."
-        self.pause_time
-        self.choose_artist
-     else
-        #this will send the artist object from spotify and give it to a method in User that checks to see if it exists or not.
-        #verify_artist will either return a NEW artist or an existing artist (if it's already in the database)
-         na = Artist.verify_artist(ao_result[answer])
-         
-         #The #verify methods verify AND create the objects. Either returns the UserArtist or returns nil, if connection already exists
-         if UserArtist.verified_create(@@user,na)
-            answer = @@prompt.select('Artist was successfully added to your Top 10! Do you want to add another artist or go back to the menu?', ["Add Another Artist","Back to Menu"], required: true)
-            case answer
-            when "Add Another Artist"
-                self.choose_artist
-            end
+        when "try again"
+            puts "Sorry, let's try again."
+            self.pause_time
+            self.choose_artist
         else
-            if UserArtist.top10_filled?(@@user)
-                puts "Sorry, but your list is full. Please return to the main menu and edit your existing artists."
-            else
-                answer = @@prompt.select('Sorry, but you already seem to have this artist in your Top 10. Do you want to add another artist or go back to the menu?', ["Add Another Artist","Back to Menu"], required: true)
+            #this will send the artist object from spotify and give it to a method in User that checks to see if it exists or not.
+            #verify_artist will either return a NEW artist or an existing artist (if it's already in the database)
+            na = Artist.verify_artist(ao_result[answer])
+            
+            #The #verify methods verify AND create the objects. Either returns the UserArtist or returns nil, if connection already exists
+            if UserArtist.verified_create(@@user,na)
+                answer = @@prompt.select('Artist was successfully added to your Top 10! Do you want to add another artist or go back to the menu?', ["Add Another Artist","Back to Menu"], required: true)
                 case answer
                 when "Add Another Artist"
                     self.choose_artist
                 end
+            else
+                if UserArtist.top10_filled?(@@user)
+                    puts "Sorry, but your list is full. Please return to the main menu and edit your existing artists."
+                else
+                    answer = @@prompt.select('Sorry, but you already seem to have this artist in your Top 10. Do you want to add another artist or go back to the menu?', ["Add Another Artist","Back to Menu"], required: true)
+                    case answer
+                        when "Add Another Artist"
+                            self.choose_artist
+                        end
+                end
             end
         end
-        self.inner_menu
-     end
+    self.inner_menu
+end
 
      #This method lets the user decide if they will connect with or reject a propsect
-def connect_or_reject(user,prospect)
-    answer = @@prompt.select('Would you like to connect or pass on this person', ["Connect","Pass"], required: true)
+def self.connect_or_pass(prospect)
+    answer = @@prompt.select("Would you like to connect or pass on this person?", ["Connect","Pass"], required: true)
     case answer
-    when "Connect"
-        Connection.create(connector: user, connectee: prospect, strength: connection_calculator(user,prospect))
-    else
-        Rejection.create(rejector: user,rejectee: prospect, strength: connection_calculator(user,prospect))
-    end
+        when "Connect"
+            Connection.create(connector: @@user, connectee: prospect, strength: connection_calculator(@@user,prospect))
+            puts "You connected with #{prospect.name}. Best of luck!"
+        else
+            Rejection.create(rejector: @@user, rejectee: prospect, strength: connection_calculator(@@user,prospect))
+            puts "Picky, are we?"
+        end
     # puts "Would you like to connect with this prospect? (y/n)"
     # response = gets.chomp.to_s
     # if response == "y"
@@ -276,7 +276,6 @@ def connection_calculator(user_1,user_2)
 
     else #this would be the compare-genre condition: to be updated
         score = 0
-
 #         user_1_genres = []
 #         user_1.artist.each do |artist|
 #             artist.genres.each do |genre|
@@ -296,8 +295,6 @@ def connection_calculator(user_1,user_2)
    score
 end
      
- end
-
 
 
 
@@ -345,50 +342,51 @@ welcome
 
    
     
-def self.rock_hands
+    def self.rock_hands
 
-    puts <<-Rock
-░░░▄▀▀▀▄░░░░░░░░░░░░░▄▀▀▀▄░░░░░░
-░░░█░░░██░░░░░░░░░░░░█░░░█░░░░░░
-░░░▀█░░░█░░░░░░░░░░░█▀░░░█░░░░░░
-░░░░█░░░▀█▄▄▄▄░▄▄▄▄▄█░░░█▀░░░░░░
-░░░░█░░░░██░░▀█▀░░██▀░░▄█░░░░░░░
-░░░░░█░░░▀█░░░█░░░██░░░█░░░░░░░░
-░░░░░█░░░░█░░░█░░░█░░░░█░░░░░░░░
-░░░░▄█░░░░█▄░▄█▄░▄█░░▄█▀▀██▄░░░░
-░░░░█░░░░░░▀▀▀▀▀▀▀░░░█▄░░░░█▄░░░
-░░░░█░░░░░░░░░░░░░░░░▀█▄▄░░░█░░░
-░░░░█░░░░░░░░░░░░░░░░░░░░░░▄█░░░
-░░░░█░░░░░░░░░░░░░░░░░░░░░░█░░░░
-░░░░░█░░░░░░░░░░░░░░░░░░░▄██░░░░
-░░░░░▀▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄██▀▀▀░░░░░░
-░░░░░░█████████████▀░░░░░░░░░░░░
-░░░░░░██▀▀█████████░░░░░░░░░░░░░
-Rock
-end
-def self.singer
-    puts <<-art
-    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    @@@@@@@@@@@@@@@@@@@             @@@@@@@@@@@@@@@@@@
-    @@@@@@@@@@@@@@@@                   @@@@@@@@@@@@@@@
-    @@@@@@@@@@@@@@                          @@@@@@@@@@
-    @@@@@@@@@@@@@@#                         @@@@@@@@@@
-    @@@@@@@@@@@@@@@                         .@@@@@@@@@
-    @@@@@@@@@@@@@@                         *(&@@@@@@@@
-    @@@@@@@@@@@@@@@%                     .(@@@@@@@@@@@
-    @@@@@@@@@@@@@@                      @@#@@@@@@@@@@@
-    @@@@@@@@@&                          @@@@@@@@@@@@@@
-    @@@@@@.                           * @@@@@@@@@@@@@@
-    @@@,                             @@@@@@@@@@@@@@@@@
-    /                      @@@%   @@@@@@@@     @@@@@@@
-                          @@@@@@@@@@@@@@@@         @@@
-                          @@@@@@@@@@@@@@@@@@         (
-                           @@@@@@@@@@@@@@@          ,/
-                            @@@@@@@@@@@@@@           @
-                            @@@@@@@@@@@@@@&          @
-                             @@@@@@@@@@@@         @@  
-    @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                         
-art
-end
+        puts <<-Rock
+    ░░░▄▀▀▀▄░░░░░░░░░░░░░▄▀▀▀▄░░░░░░
+    ░░░█░░░██░░░░░░░░░░░░█░░░█░░░░░░
+    ░░░▀█░░░█░░░░░░░░░░░█▀░░░█░░░░░░
+    ░░░░█░░░▀█▄▄▄▄░▄▄▄▄▄█░░░█▀░░░░░░
+    ░░░░█░░░░██░░▀█▀░░██▀░░▄█░░░░░░░
+    ░░░░░█░░░▀█░░░█░░░██░░░█░░░░░░░░
+    ░░░░░█░░░░█░░░█░░░█░░░░█░░░░░░░░
+    ░░░░▄█░░░░█▄░▄█▄░▄█░░▄█▀▀██▄░░░░
+    ░░░░█░░░░░░▀▀▀▀▀▀▀░░░█▄░░░░█▄░░░
+    ░░░░█░░░░░░░░░░░░░░░░▀█▄▄░░░█░░░
+    ░░░░█░░░░░░░░░░░░░░░░░░░░░░▄█░░░
+    ░░░░█░░░░░░░░░░░░░░░░░░░░░░█░░░░
+    ░░░░░█░░░░░░░░░░░░░░░░░░░▄██░░░░
+    ░░░░░▀▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄██▀▀▀░░░░░░
+    ░░░░░░█████████████▀░░░░░░░░░░░░
+    ░░░░░░██▀▀█████████░░░░░░░░░░░░░
+    Rock
+    end
+
+    def self.singer
+        puts <<-art
+        @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        @@@@@@@@@@@@@@@@@@@             @@@@@@@@@@@@@@@@@@
+        @@@@@@@@@@@@@@@@                   @@@@@@@@@@@@@@@
+        @@@@@@@@@@@@@@                          @@@@@@@@@@
+        @@@@@@@@@@@@@@#                         @@@@@@@@@@
+        @@@@@@@@@@@@@@@                         .@@@@@@@@@
+        @@@@@@@@@@@@@@                         *(&@@@@@@@@
+        @@@@@@@@@@@@@@@%                     .(@@@@@@@@@@@
+        @@@@@@@@@@@@@@                      @@#@@@@@@@@@@@
+        @@@@@@@@@&                          @@@@@@@@@@@@@@
+        @@@@@@.                           * @@@@@@@@@@@@@@
+        @@@,                             @@@@@@@@@@@@@@@@@
+        /                      @@@%   @@@@@@@@     @@@@@@@
+                            @@@@@@@@@@@@@@@@         @@@
+                            @@@@@@@@@@@@@@@@@@         (
+                            @@@@@@@@@@@@@@@          ,/
+                                @@@@@@@@@@@@@@           @
+                                @@@@@@@@@@@@@@&          @
+                                @@@@@@@@@@@@         @@  
+        @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                         
+    art
+    end
 
 end
