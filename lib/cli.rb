@@ -31,7 +31,6 @@ else
     exit
 end
 
-
 end
 
 def self.new_user
@@ -78,24 +77,39 @@ Before we can continue,
     end
 end
 
-
-
 def self.change_top_10
-            #below comment is to trick a list of the songs that exist in UserArtists
-            #luis = UserArtist.where(user_id: @@user.id).map{|i| i.artist.name}
-            var = @@user.artists.map{|artist| artist.name}
 
-            puts "Welcome to the Top 10 manager. Here are your Top 10 artists:"
-            var.each do |name|
-                puts name
-            end
+    var3 = User.find(@@user.id).artists.map{|artist| artist.name}
 
-            #@@prompt.select("Welcome to the Top 10 manager. Here are your Top 10 artists", var)
-            var2 = @@prompt.select("Do you want to change your Top 10 or return to main menu?", ["Change Top 10","Return to Main Menu"],required: true)
-            case var2
-            when "Change Top 10"
-                #placeholder: change_top_10
-            end
+    response = @@prompt.select("Which artist would you like to change? \n", var3, required: true)
+    artist_to_change = @@user.artists.find_by(name: response) 
+
+    userartist_to_delete = @@user.user_artists.find_by(artist: artist_to_change) 
+
+    response = @@prompt.select("Are you sure you'd like to delete #{artist_to_change.name} from your Top 10? \n", ["Yes","No, take me back to the Main Menu"], required: true)
+    case response
+    when "Yes"
+        userartist_to_delete.destroy 
+    end
+end
+
+def self.view_top_10
+
+    if User.find(@@user.id).artists == []
+        puts "Sorry, your Top 10 is empty. Please choose Add Artists from the main menu."
+    else    
+        puts "Welcome to the Top 10 manager. Here are your Top 10 artists:"
+
+        User.find(@@user.id).artists.each do |artist|
+            puts artist.name
+        end
+
+        var2 = @@prompt.select("Do you want to change your Top 10 or return to main menu?", ["Change Top 10","Return to Main Menu"],required: true)
+        case var2
+        when "Change Top 10"
+            change_top_10
+        end
+    end
 end
 
 def self.find_connections
@@ -119,20 +133,31 @@ def self.find_connections
 end
 
     def self.inner_menu
-        answer = @@prompt.select("Welcome to the menu #{@@user.name}, what would you like to do?", ["View Top 10","View Connections & Matches","Add Artists","Find Connections", "See my account information","Return to login screen"], required: true)
+        answer = @@prompt.select("Welcome to the menu #{@@user.name}, what would you like to do?", ["View and Change Top 10","View Connections & Matches","Add Artists","Find Connections", "See my account information","Return to login screen"], required: true)
         case answer
-        when "View Top 10"
-            self.change_top_10
+        when "View and Change Top 10"
+            
+                self.view_top_10
         when "View Connections & Matches"
-            var = @@user.connectees.map{|connectee| connectee.name}
+            if @@user.connectees == []
+                puts "You haven't made any connecions yet! Choose the Find Connections option from the main menu to find people with similar music tastes as you."
+            else
+                var = @@user.connectees.map{|connectee| connectee.name}
 
-            puts "Here is everyone you added to your connections:"
-            var.each do |name|
-                puts name
+                puts "Here is everyone you added to your connections:"
+                var.each do |name|
+                    puts name
+                end
+
+                #Need to vertify this works as intended
+                if @@user.matches != []
+                    puts "Here are the connection(s) that like you back. Send them an e-mail!"
+                    self.print_matches(@@user)
+                else
+                    puts "Sorry, no matches yet. Try to improve your playlist to find more connections. Someone is sure to connect back with you soon!"
+                    puts "Returning to main menu."
+                end
             end
-
-            puts "Here are the connection(s) that like you back. Send them an e-mail!"
-            self.print_matches(@@user)
         when
             "Add Artists"
             self.choose_artist
