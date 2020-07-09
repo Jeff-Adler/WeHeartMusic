@@ -97,21 +97,21 @@ end
 
 #This method will measure the strength of a connection between two users. Needs to be fixed
 def connection_calculator(user_1,user_2)
+   score=0
 
-    40
-#    score=0
+    artist_matches = user_1.artists.select do |user_1_artist|
+        user_2.artists.any? do |user_2_artist|
+            user_1_artist == user_2_artist
+        end
+    end
 
-#     artist_matches = user_1.artists.select do |user_1_artist|
-#         user_2.artists.any? do |user_2_artist|
-#             user_1_artist == user_2_artist
-#         end
-#     end
-
-#     if !(artist_matches == nil)
-#         artist_matches.each do |artist|
-#             score += (3 * (100 - artist.popularity)/100)
-#         end
-#     else
+    if !(artist_matches == nil)
+        artist_matches.each do |artist|
+            score += (3 * (100 - artist.popularity)/100)
+        end
+        
+    else #this would be the go-to-genre condition
+        score = 0
 
 #         user_1_genres = []
 #         user_1.artist.each do |artist|
@@ -128,8 +128,8 @@ def connection_calculator(user_1,user_2)
 #         end
 
 #         score += 1 - ((user_1_genres - user_2_genres).size / user_1_genres.size)
-#     end
-#     score
+     end
+   score
 end
 
 #This artist prompts the user to pick an artist to add to their playlist.
