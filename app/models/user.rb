@@ -25,5 +25,21 @@ class User < ActiveRecord::Base
         end
     end
 
+    def self.email_exist?(email)
+        if self.all.find_by(email: email)
+            true
+        end
+    end
+     
+
+    def self.verify_user(name,age,city,email)
+        check= self.email_exist?(email)
+        if check
+            check
+        else
+            User.create(name: name, age: age, city: city, email: email)
+        end
+    end
+
 end
 

@@ -1,3 +1,6 @@
 require_relative '../config/environment'
 
-runner 
+#this will call Jeff's runner
+#runner 
+
+Cli.welcome
