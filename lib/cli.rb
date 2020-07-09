@@ -211,16 +211,23 @@ def self.choose_artist
 
      #This method lets the user decide if they will connect with or reject a propsect
 def connect_or_reject(user,prospect)
-    puts "Would you like to connect with this prospect? (y/n)"
-    response = gets.chomp.to_s
-    if response == "y"
+    answer = @@prompt.select('Would you like to connect or pass on this person', ["Connect","Pass"], required: true)
+    case answer
+    when "Connect"
         Connection.create(connector: user, connectee: prospect, strength: connection_calculator(user,prospect))
-    elsif response == "n"
-        Rejection.create(rejector: user,rejectee: prospect, strength: connection_calculator(user,prospect))
     else
-        puts "I didn't quite get that"
-        connect_or_reject(user, prospect)
+        Rejection.create(rejector: user,rejectee: prospect, strength: connection_calculator(user,prospect))
     end
+    # puts "Would you like to connect with this prospect? (y/n)"
+    # response = gets.chomp.to_s
+    # if response == "y"
+    #     Connection.create(connector: user, connectee: prospect, strength: connection_calculator(user,prospect))
+    # elsif response == "n"
+    #     Rejection.create(rejector: user,rejectee: prospect, strength: connection_calculator(user,prospect))
+    # else
+    #     puts "I didn't quite get that"
+    #     connect_or_reject(user, prospect)
+    # end
 end
 
 #This method will find a prospect for the user
