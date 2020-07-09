@@ -34,6 +34,7 @@ def seed
     ua1 = UserArtist.create(user: u1,artist: a1)
     ua2 = UserArtist.create(user: u2,artist: a1)
     ua3 = UserArtist.create(user: u1,artist: Artist.all[0])
+    Connection.create(connector: u1, connectee: u2, strength:40)
   end
 
 def help
@@ -74,8 +75,10 @@ def find_prospects(user_1)
     strength_counter = 0
     temp_prospect = nil
     User.all.each do |user|
-        if (user == user_1) || user_1.connections.any?{|connection|connection == user} ||  user_1.rejections.any?{|rejection|rejection == user}
-
+    #This makes sure that a) we are not comparing the user to itself and b) we are ignoring prospects the user already connected or rejected
+        
+        if (user == user_1) || user_1.connectee?(user) ||  user_1.rejectee?(user)
+            next
         else
             score = connection_calculator(user_1,user)
             if strength_counter < score
@@ -85,9 +88,10 @@ def find_prospects(user_1)
         end
     end
     if temp_prospect == nil
-        puts "Sorry, we could not find any matches/"
+        puts "Sorry, we could not find any matches."
     else
         puts "Your match is: #{temp_prospect.name}. #{temp_prospect.name} is a fan of #{temp_prospect.artists[0].name}."
+        temp_prospect
     end
 end
 
@@ -133,12 +137,15 @@ def choose_artist(nu)
    puts "Choose an artist you'd like to add to your favorites list:"
    artist = gets.chomp.to_s
    ao = RSpotify::Artist.search(artist)
-   #this ensures RSpotify returned a valid artist, otherwise program breaks
-   if ao == nil
-    choose_artist(nu)
-   end
+
   
-    puts "Confirming choice #{ao.first.name} (y/n)?"
+    begin 
+        puts "Confirming choice #{ao.first.name} (y/n)?"
+    rescue NoMethodError
+        puts "Please type a different artist"
+        choose_artist(nu)
+    end
+
     answer = gets.chomp.to_s
 
     if answer == "n"
@@ -176,8 +183,7 @@ def choose_artist(nu)
     else
         puts "Invalid answer. Try again."
         choose_artist(nu)
-    end
-    
+    end 
 end
 
 def new_user
@@ -192,7 +198,7 @@ def new_user
 
     nu = User.create(name: n, age: a, city: c, email: e)
     puts "Your account was successfully created #{nu.name}!"
-
+    nu
 end
 
 def returning_user (email)
@@ -229,3 +235,55 @@ def welcome
     user_status(us)
 end
 
+
+##################################################
+
+def runner 
+    
+    #This resets the database. We will want to delete this in the final product
+    refresh_database
+
+    #This seeds the database for testing purposes.
+    seed
+
+    welcome
+
+    me = new_user
+
+puts "Now let's build your playlist!"
+
+#this will run as many times as necessary to fill their playlist
+    5.times do
+        choose_artist(me)
+    end
+
+puts "Now let's find people with similar music choices to you!"
+
+prospect = find_prospects(me)
+
+#This prompts you to connect or reject with prospect, assuming a prospect was found
+if prospect != nil
+    connect_or_reject(me, prospect)
+end
+
+#This will allow them to continue finding to prospects until they decide to stop
+puts "Want to find more prospects? (y/n)"
+response = gets.chomp.to_s
+while response == "y" do
+    prospect = find_prospects(me)
+
+    #This will prompt you to connect or reject the prospect, or it will exit the loop if there are no remaining prospects
+    if prospect != nil
+        connect_or_reject(me, prospect)
+    else
+        break
+    end
+    
+    puts "Want to find more prospects? (y/n)"
+    response = gets.chomp.to_s
+end
+
+#This will tell the user everyone they are (mutually matched) with
+puts "Your matches are #{me.matches}"
+
+end
