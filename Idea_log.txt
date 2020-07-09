@@ -21,10 +21,13 @@ Questions
 
 
 Things to do 7/9/2020, in order of importance
-    1. Fix the connection_calculator (maybe scrap Genre, for now?)
     2. Clean-up the CLI
     3. implement tty
     4. test, test, test
-    5. Fix returning_user (if we want to keep it)
+    5. Write the ReadMe doc
+
+Things to add:
+1. genre 
+2. quit/help commands
 
 
