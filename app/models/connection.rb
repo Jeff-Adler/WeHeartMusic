@@ -6,6 +6,8 @@ class Connection < ActiveRecord::Base
     def self.match?(user_a,user_b)
         (user_a.connectees.include? user_b) && (user_b.connectees.include? user_a)
     end
+    #jeff , alice
+    #alice, jeff
+
 end
 
-        

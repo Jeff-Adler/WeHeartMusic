@@ -17,5 +17,17 @@ Things to accomplish NOW:
     - Implement Match methods - Eli
 
 Questions
-1. Where do we implement playlist artist upper limit
+1. Where do we implement playlist artist upper limit]
+
+
+Things to do 7/9/2020, in order of importance
+    2. Clean-up the CLI
+    3. implement tty
+    4. test, test, test
+    5. Write the ReadMe doc
+
+Things to add:
+1. genre 
+2. quit/help commands
+
 

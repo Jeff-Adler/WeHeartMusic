@@ -1,18 +1,17 @@
 class Artist < ActiveRecord::Base
     has_many :user_artists
     has_many :users, through: :user_artists
+    has_many :artist_genres
+    has_many :genres, through: :artist_genres
+    #validates_uniqueness_of :name
 
-    # def save_if_new
-    #     Artist.all.select do |a|
-    #         if a.name == self.name
-    #             puts "Artist already exists"
-    #         else
-    #             puts "New artist has been added!"
-    #             Artist.create(name: self.name, popularity: self.popularity)
-    #         end
-    #     end
-    # end
-
+    def self.verify_artist(artist)
+        check= self.all.find_by(name: artist.name)
+        if check
+            check
+        else
+            Artist.create(name: artist.name, popularity: artist.popularity)
+        end
+    end
 
 end
-
