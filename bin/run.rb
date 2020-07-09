@@ -1,3 +1,3 @@
 require_relative '../config/environment'
 
-runner 
+Cli.welcome
