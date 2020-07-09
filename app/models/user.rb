@@ -41,5 +41,18 @@ class User < ActiveRecord::Base
         end
     end
 
+    def genres
+        genres = []
+        self.artists.each do |artist|
+            artist.genres.each do |genre|
+                if !(genres.any?{|g| g == genre})
+                    genres << genre
+                end
+            end
+        end
+        genres
+    end
+
+
 end
 

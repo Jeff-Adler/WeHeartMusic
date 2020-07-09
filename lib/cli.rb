@@ -133,12 +133,13 @@ def self.find_connections
 end
 
     def self.inner_menu
-        answer = @@prompt.select("Welcome to the menu #{@@user.name}, what would you like to do?", ["View and Change Top 10","View Connections & Matches","Add Artists","Find Connections", "See my account information","Return to login screen"], required: true)
+        answer = @@prompt.select("Welcome to the menu #{@@user.name}, what would you like to do? (Don't forget to scroll!!)", ["View or Change Top 10", "Add Artists", "View Genres","View Connections and Matches","Find Connections", "See my account information","Return to login screen"], required: true)
         case answer
-        when "View and Change Top 10"
+        when "View or Change Top 10"
             
                 self.view_top_10
-        when "View Connections & Matches"
+
+        when "View Connections and Matches"
             if @@user.connectees == []
                 puts "You haven't made any connecions yet! Choose the Find Connections option from the main menu to find people with similar music tastes as you."
             else
@@ -161,9 +162,11 @@ end
         when
             "Add Artists"
             self.choose_artist
-        # when #This will allow you to accept or reject pending requests
-        #     "Manage Connections"
-        #     puts "this would be where we make the manage connections method"
+
+        when "View Genres"
+            puts "Based on your Top 10, your favorite genres are:"
+            self.print_genres(@@user)
+
         when "Find Connections"
             puts "Let's find people with similar music tastes to you!"
 
@@ -185,13 +188,23 @@ def self.display_account_info
     puts "Email: #{@@user.email}"
 end
 
+def self.print_genres(user)
+
+    User.find(@@user.id).genres.each do |genre|
+        puts "#{genre.name}"
+    end
+end
+
 #This prints your matches by calling User#matches
 def self.print_matches(user)
-    matches = user.matches
+
+
+    matches = User.find(@@user.id).matches
     matches.each do |match|
         puts "#{match.name}: #{match.email}"
     end
 end
+
 
 def self.choose_artist
     artist = @@prompt.ask("Please choose an artist you'd like to add to your Top 10 \n", required: true)
@@ -212,6 +225,26 @@ def self.choose_artist
             
             #The #verify methods verify AND create the objects. Either returns the UserArtist or returns nil, if connection already exists
             if UserArtist.verified_create(@@user,na)
+
+                    ####this is to set genres
+                   #we have to check whether to make NEW genre entries or JUST artistgenre connections
+                    #this will loop through every genre of artist the user selected
+                    artist_object = ao.first
+                    artist_object.genres.each do |genre_element|
+                        #this will loop through every genre in the database
+                        genre_match = Genre.all.find do |g|
+                            g.name == genre_element
+                        end
+                            #this will check if the genre was found in the database. If nil, it means it was not
+                            if genre_match == nil
+                                genre_var = Genre.create(name: genre_element)
+                                ArtistGenre.create(artist: na, genre: genre_var)
+                            else
+                                ArtistGenre.create(artist: na, genre: genre_match)
+                            end
+                    end
+                    #######genres end
+
                 answer = @@prompt.select('Artist was successfully added to your Top 10! Do you want to add another artist or go back to the menu?', ["Add Another Artist","Back to Menu"], required: true)
                 case answer
                 when "Add Another Artist"
@@ -243,16 +276,7 @@ def self.connect_or_pass(prospect)
             Rejection.create(rejector: @@user, rejectee: prospect, strength: connection_calculator(@@user,prospect))
             puts "Picky, are we?"
         end
-    # puts "Would you like to connect with this prospect? (y/n)"
-    # response = gets.chomp.to_s
-    # if response == "y"
-    #     Connection.create(connector: user, connectee: prospect, strength: connection_calculator(user,prospect))
-    # elsif response == "n"
-    #     Rejection.create(rejector: user,rejectee: prospect, strength: connection_calculator(user,prospect))
-    # else
-    #     puts "I didn't quite get that"
-    #     connect_or_reject(user, prospect)
-    # end
+
 end
 
 #This method will find a prospect for the user
@@ -299,23 +323,10 @@ def connection_calculator(user_1,user_2)
             score += (3 * (100 - artist.popularity)/100)
         end
 
-    else #this would be the compare-genre condition: to be updated
-        score = 0
-#         user_1_genres = []
-#         user_1.artist.each do |artist|
-#             artist.genres.each do |genre|
-#                 user_1_genres << genre
-#             end
-#         end
+    else #this is the compare-genre condition
 
-#         user_2_genres = []
-#         user_2.artist.each do |artist|
-#             artist.genres.each do |genre|
-#                 user_2_genres << genre
-#             end
-#         end
+         score += 1 - ((user_1.genres - user_2.genres).size / user_2.genres.size)
 
-#         score += 1 - ((user_1_genres - user_2_genres).size / user_1_genres.size)
      end
    score
 end
