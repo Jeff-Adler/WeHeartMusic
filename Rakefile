@@ -9,7 +9,7 @@ task :console do
 end
 
 
-desc 'seed the database with values from spotify'
+desc 'seed the database with randomm users'
   task :seed do
     require_relative './db/seeds.rb'
   end
