@@ -48,7 +48,9 @@ With this functionality you should be able to use the app to add artists, create
 
 ## License & Information for Contributors
 
-TBD
+Feel free to pull requests if you'd like. For any major changes, please open an issue first to discuss what you would like to change.
+
+License?
 
 
 

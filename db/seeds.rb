@@ -157,6 +157,6 @@ rejection5 = Rejection.create(rejector: user5, rejectee: user6, strength: 2.7)
 rejection6 = Rejection.create(rejector: user6, rejectee: user1, strength: 4.0)
 
 
-User.average_connections
+#User.well_connected
 
- binding.pry
+ #binding.pry
