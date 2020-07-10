@@ -9,7 +9,7 @@ class UserArtist < ActiveRecord::Base
         end
      end
      def self.top10_filled?(user)
-         UserArtist.where(user_id: user.id).count >10
+         UserArtist.where(user_id: user.id).count >= 10
      end
  
  

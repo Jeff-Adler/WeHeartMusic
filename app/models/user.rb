@@ -52,12 +52,10 @@ class User < ActiveRecord::Base
     def self.well_connected
         most_connects = self.all.map {|u| u.connections.count}
         
-        #having issues with duplicates
-        self.all.select do |u|
-            if u.connections.count == most_connects.max
-                puts "Our most well-connected user is currently #{u.name} with an impressive #{u.connections.count} connections. Total flirt right here."
-            end
+         most_u = self.all.select do |u|
+            u.connections.count == most_connects.max
         end
+        puts "Our biggest flirt(s) are currently #{most_u.map{|u| u.name}.join(", ")} with an impressive #{most_u.map{|u| u.connections.count}.uniq[0]} connections. Go get'em tiger(s)."
     end
 
 

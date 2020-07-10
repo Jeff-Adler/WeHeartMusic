@@ -115,7 +115,7 @@ end
 def self.find_connections
 
     #Presents the user in the database with strongest connection, that you have not yet encountered
-    prospect = find_prospects(@@user)
+    prospect = self.find_prospects(@@user)
 
     #This prompts you to connect or reject with prospect, assuming a prospect was found     
     if prospect != nil
@@ -198,20 +198,12 @@ end
 
 
 def self.analytics_page
-    answer = @@prompt.select("Welcome to the analytics page! Which statistics would you like to view? (Don't forget to scroll!!)",["Most Popular Artist","Your Favorite Genres", "Most Connected User", "Most Obscure Artist", "Most Popular Genre", "Average User Connection Count", "Return to Main Menu"],required: true)
+    answer = @@prompt.select("Welcome to the analytics page! Which statistics would you like to view? (Don't forget to scroll!!)",["Most Popular Artist", "Biggest Flirt", "Most Obscure Artist", "Most Popular Genre", "Average User Connection Count", "Return to Main Menu"],required: true)
         case answer
             when "Most Popular Artist"
                 Artist.most_popular
 
-                
-            when "Your Favorite Genres"
-                puts "Here are your favorite genres based on the artists in yout Top 10."
-        
-                u_genres = @@user.genres
-                g_names = u_genres.map {|g| g.name}
-                puts g_names
-
-            when "Most Connected User"
+            when "Biggest Flirt"
                 User.well_connected
 
             when "Most Obscure Artist"
@@ -326,7 +318,7 @@ def self.connect_or_pass(prospect)
 end
 
 #This method will find a prospect for the user
-def find_prospects(user_1)
+def self.find_prospects(user_1)
     strength_counter = 0
     temp_prospect = nil
     User.all.each do |user|
@@ -336,23 +328,26 @@ def find_prospects(user_1)
         if (user == user_1) || user_1.connectee?(user) ||  user_1.rejectee?(user)
             next
         else
-            score = connection_calculator(user_1,user)
+        
+            score = self.connection_calculator(user_1,user)
             if strength_counter < score
                 strength_counter = score
                 temp_prospect = user
             end
+
         end
     end
+    
     if temp_prospect == nil
         puts "Sorry, we could not find any prospects."
     else
-        puts "Your match is: #{temp_prospect.name}. Your connection strength with #{temp_prospect.name} is #{strength_counter}/10."
+        puts "Your match is: #{temp_prospect.name}. Your connection strength with #{temp_prospect.name} is #{strength_counter.round(half: :up)}/10."
         temp_prospect
     end
 end
 
 #This method will measure the strength of a connection between two users. Needs to be fixed
-def connection_calculator(user_1,user_2)
+def self.connection_calculator(user_1,user_2)
 
    score=0
 
@@ -360,18 +355,20 @@ def connection_calculator(user_1,user_2)
     artist_matches = user_1.artists.select do |user_1_artist|
         #This loop will return true whenever an artist of user_2 matches the current of user_1_artist
         user_2.artists.any? do |user_2_artist|
-            user_1_artist == user_2_artist
+            user_1_artist.id == user_2_artist.id
         end
     end
 
-    if !(artist_matches == nil || artist_matches.empty?)
+    #this is the compare-artist condition
+    if !(artist_matches.nil? || artist_matches.empty?)
+        
         artist_matches.each do |artist|
-            score += (3 * (100 - artist.popularity)/100)
+            score += (3 * (100.0 - artist.popularity)/100.0)
         end
 
     else #this is the compare-genre condition
 
-         score += 1 - ((user_1.genres - user_2.genres).size / user_2.genres.size)
+         score += 1.0 - ((user_1.genres - user_2.genres).size / user_2.genres.size)
 
      end
    score
