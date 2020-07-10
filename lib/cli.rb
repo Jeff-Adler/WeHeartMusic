@@ -264,24 +264,10 @@ def self.choose_artist
             #The #verify methods verify AND create the objects. Either returns the UserArtist or returns nil, if connection already exists
             if UserArtist.verified_create(@@user,na)
 
-                    ####this is to set genres
-                   #we have to check whether to make NEW genre entries or JUST artistgenre connections
-                    #this will loop through every genre of artist the user selected
-                    artist_object = ao.first
-                    artist_object.genres.each do |genre_element|
-                        #this will loop through every genre in the database
-                        genre_match = Genre.all.find do |g|
-                            g.name == genre_element
-                        end
-                            #this will check if the genre was found in the database. If nil, it means it was not
-                            if genre_match == nil
-                                genre_var = Genre.create(name: genre_element)
-                                ArtistGenre.create(artist: na, genre: genre_var)
-                            else
-                                ArtistGenre.create(artist: na, genre: genre_match)
-                            end
-                    end
-                    #######genres end
+                        #This will create Genre and ArtistGenre objects from the Artist, if they dont' already exist
+                        new_genres = Genre.verify_genre(ao_result[answer])
+
+                        ArtistGenre.verify_artistgenre(na, new_genres)
 
                 answer = @@prompt.select('Artist was successfully added to your Top 10! Do you want to add another artist or go back to the menu?', ["Add Another Artist","Back to Menu"], required: true)
                 case answer
@@ -349,30 +335,44 @@ end
 #This method will measure the strength of a connection between two users. Needs to be fixed
 def self.connection_calculator(user_1,user_2)
 
-   score=0
+   artist_score = 0
+   genre_score = 0
 
     #This stores all the artists that user_1 and user_2 have in common
     artist_matches = user_1.artists.select do |user_1_artist|
+
         #This loop will return true whenever an artist of user_2 matches the current of user_1_artist
         user_2.artists.any? do |user_2_artist|
             user_1_artist.id == user_2_artist.id
         end
     end
 
-    #this is the compare-artist condition
-    if !(artist_matches.nil? || artist_matches.empty?)
+    #compare-artist condition
+    if !(artist_matches.nil? || artist_matches.empty?) # = they do have artists in common
         
         artist_matches.each do |artist|
-            score += (3 * (100.0 - artist.popularity)/100.0)
+            artist_score += (3 * (100.0 - artist.popularity)/100.0)
         end
 
-    else #this is the compare-genre condition
+    end
 
-         score += 1.0 - ((user_1.genres - user_2.genres).size / user_2.genres.size)
+    #RIGHT NOW GENRE WILL ALSO COMPUTE GENRES FROM OVERLAPPING ARTISTS 
 
-     end
-   score
+    #compare-genre condition
+    genre_score += 1.0 - ((user_1.genres - user_2.genres).size / user_1.genres.size)
+    genre_score *= 3
+
+    #This ensures strength score is not greater than 10
+    if artist_score + genre_score > 10
+        10
+    else
+        artist_score + genre_score
+    end
+
 end
+
+#artist:[kanye] - [kanye]
+#genre: [alt rock...] - [alt rock...]
      
 
 

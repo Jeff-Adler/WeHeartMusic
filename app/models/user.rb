@@ -61,7 +61,6 @@ class User < ActiveRecord::Base
 
     def self.average_connections
         average = self.all.map {|u| u.connections.count}
-        #binding.pry
         puts "The average user has #{average.sum(0.0)/average.count} connection(s)."
     end
 

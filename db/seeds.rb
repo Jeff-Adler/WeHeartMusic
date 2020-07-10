@@ -1,5 +1,5 @@
 #This file serves purely to test classes and models as you build the program
-require_relative '../config/environment' #temp test
+require_relative '../config/environment' 
 
 
 User.destroy_all
@@ -9,6 +9,35 @@ Connection.destroy_all
 Rejection.destroy_all
 Genre.destroy_all
 ArtistGenre.destroy_all
+
+
+#this will return the artist at the end, but be wary that it returns an object, not DB access
+def add_artistgenre_seed(artist_name)
+    spotify_artist = RSpotify::Artist.search(artist_name).first
+    new_artist = Artist.verify_artist(spotify_artist)
+    new_genres = Genre.verify_genre(spotify_artist)
+    ArtistGenre.verify_artistgenre(new_artist, new_genres)
+    new_artist 
+end
+
+
+#profile: alt-rock fan
+a2 = add_artistgenre_seed("Guided By Voices")
+a3 = add_artistgenre_seed("Tame Impala")
+alt_rock_u1 = User.create(name:"krystal", age: 23, city: "NYC", email: "krystalemail")
+UserArtist.create(user: alt_rock_u1, artist: a2)
+UserArtist.create(user: alt_rock_u1, artist: a3)
+
+
+
+#profile: hip-hop fan
+a1 = add_artistgenre_seed("Kanye West")
+a4 = add_artistgenre_seed("JAY-Z")
+hip_hop_u1 = User.create(name:"bill", age: 23, city: "NYC", email: "billemail")
+UserArtist.create(user: hip_hop_u1, artist: a1)
+UserArtist.create(user: hip_hop_u1, artist: a4)
+
+
 
 #artist seeds
 # artist1 = Artist.create(name: "The Beatles", popularity: 30)
