@@ -193,20 +193,20 @@ end
 
 
 def self.analytics_page
-    answer = @@prompt.select("Welcome to the analytics page! Which statistics would you like to view? (Don't forget to scroll!!)",["Most Popular Artist","Your Favorite Genres", "Most Connected User", "Most Obscure Artist", "Most Popular Genre", "Average User Connection Count", "Return to Main Menu"],required: true)
+    answer = @@prompt.select("Welcome to the analytics page! Which statistics would you like to view? (Don't forget to scroll!!)",["Most Popular Artist","Your Favorite Genres", "Biggest Flirt", "Most Obscure Artist", "Most Popular Genre", "Average User Connection Count", "Return to Main Menu"],required: true)
         case answer
             when "Most Popular Artist"
                 Artist.most_popular
 
                 
             when "Your Favorite Genres"
-                puts "Here are your favorite genres based on the artists in yout Top 10."
+                puts "Here are your favorite genres based on the artists in your Top 10."
         
                 u_genres = @@user.genres
                 g_names = u_genres.map {|g| g.name}
                 puts g_names
 
-            when "Most Connected User"
+            when "Biggest Flirt"
                 User.well_connected
 
             when "Most Obscure Artist"
