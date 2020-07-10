@@ -1,4 +1,12 @@
 #This file serves purely to test classes and models as you build the program
+require_relative '../config/environment' #temp test
+
+
+
+
+
+
+
 User.destroy_all
 Artist.destroy_all
 UserArtist.destroy_all
@@ -147,3 +155,8 @@ rejection3 = Rejection.create(rejector: user4, rejectee: user3, strength: 4.1)
 rejection4 = Rejection.create(rejector: user3, rejectee: user2, strength: 1.1)
 rejection5 = Rejection.create(rejector: user5, rejectee: user6, strength: 2.7)
 rejection6 = Rejection.create(rejector: user6, rejectee: user1, strength: 4.0)
+
+
+#User.well_connected
+
+ #binding.pry

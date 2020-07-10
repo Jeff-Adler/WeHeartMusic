@@ -1,5 +1,6 @@
 require 'rspotify'
 require 'pry'
+require 'tty-prompt'
 require_relative '../config/environment'
 require_relative '../app/models/user.rb'
 require_relative '../app/models/artist.rb'
