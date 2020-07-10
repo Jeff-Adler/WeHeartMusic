@@ -2,11 +2,6 @@
 require_relative '../config/environment' #temp test
 
 
-
-
-
-
-
 User.destroy_all
 Artist.destroy_all
 UserArtist.destroy_all
