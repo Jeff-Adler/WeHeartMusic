@@ -38,6 +38,17 @@ UserArtist.create(user: hip_hop_u1, artist: a1)
 UserArtist.create(user: hip_hop_u1, artist: a4)
 
 
+#profile: eclectic fan
+a5 = add_artistgenre_seed("Swans")
+a6 = add_artistgenre_seed("Mac Demarco")
+a7 = add_artistgenre_seed("Nas")
+a8 = add_artistgenre_seed("Steely Dan")
+ec_u1 = User.create(name:"eli", age: 28, city: "NYC", email: "eliemail")
+UserArtist.create(user: ec_u1, artist: a5)
+UserArtist.create(user: ec_u1, artist: a6)
+UserArtist.create(user: ec_u1, artist: a7)
+UserArtist.create(user: ec_u1, artist: a8)
+
 
 #artist seeds
 # artist1 = Artist.create(name: "The Beatles", popularity: 30)
