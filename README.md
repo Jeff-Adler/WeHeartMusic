@@ -1,6 +1,6 @@
 # spotify_dating_app
 
-Lovers of music and lovers of love, look no further. The Spotify Dating App is here to connect you to other users who share the same musical interets as yourself. Simply create a profile, add artists to your Top 10 list and search for connections. It's as easy as a-one, two, a-one, two, three, four!
+Lovers of music and lovers of love, look no further. The Spotify Dating App is here to connect you to other users who share the same musical interests as yourself. Simply create a profile, add artists to your Top 10 list and search for connections. It's as easy as a-one, two, a-one, two, three, four!
 
 # Table of Contents
 
@@ -31,7 +31,8 @@ This gem creates a visually appealing CLI. Most of the functionality of the CLI 
 
 The Spotify Dating App has a lot of great features at your disposal. Here are some quick tips so that you get the most out of the application:
 
-- To start the application, excute the following in the terminal: ruby bin/run.rb
+- Retrieve your Spotify API ID and Secret and enter "RSpotify::authenticate("id" ,"secret key")" into lib/spotify_setup.rb
+- To start the application, execute the following in the terminal: ruby bin/run.rb
 - This will take you to the log-in screen, where you can create a new user, log-in if you are a returning user or exit the application. NOTE: this is the only menu where you can exit the application.
 - After creating a new user/adding artists or logging in as an existing user with your credentials, you'll be taken to the main menu. From here you have the following options:
     * View or Change your Top 10: View or delete artists from your Top 10 list.
@@ -50,7 +51,7 @@ With this functionality you should be able to use the app to add artists, create
 
 Feel free to pull requests if you'd like. For any major changes, please open an issue first to discuss what you would like to change.
 
-License?
+License (pending)
 
 
 

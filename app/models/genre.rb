@@ -1,7 +1,6 @@
 class Genre < ActiveRecord::Base
     has_many :artist_genres
     has_many :artists, through: :artist_genres
-    validates_uniqueness_of :name
 
 
     def self.most_common
@@ -14,5 +13,17 @@ class Genre < ActiveRecord::Base
         end
     end
 
+    def self.verify_genre(spotify_artist)
+
+        spotify_artist.genres.map do |genre_element|
+
+            check= self.find_by(name: genre_element)
+            if check
+                check
+            else
+                Genre.create(name: genre_element)
+            end              
+        end
+    end
 
 end

@@ -27,7 +27,7 @@ class Artist < ActiveRecord::Base
         least_pop = self.all.map {|a| a.popularity}
         
         most_o = self.all.select do |a|
-            a.popularity == least_pop.max
+            a.popularity == least_pop.min
         end
         puts "The most obscure artist(s) within our database are currently #{most_o.map{|a| a.name}.join(", ")}, ranked #{most_o.map{|a| a.popularity}.uniq[0]} in popularity on Spotify."
     end
