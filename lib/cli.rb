@@ -133,8 +133,12 @@ def self.find_connections
 end
 
     def self.inner_menu
+<<<<<<< HEAD
         system "clear"
         answer = @@prompt.select("Welcome to the menu #{@@user.name}, what would you like to do? (Don't forget to scroll!!)", ["View or Change Top 10", "Add Artists", "View Genres","View Connections and Matches","Find Connections", "See my account information","Return to login screen"], required: true)
+=======
+        answer = @@prompt.select("Welcome to the menu #{@@user.name}, what would you like to do? (Don't forget to scroll!!)", ["View or Change Top 10", "Add Artists", "View Genres","View Connections and Matches","Find Connections", "See my account information", "Analytics", "Return to login screen"], required: true)
+>>>>>>> master
         case answer
         when "View or Change Top 10"
             
@@ -175,6 +179,9 @@ end
          
         when "See my account information"
             self.display_account_info
+
+        when "Analytics"
+            self.analytics_page    
         else
             Cli.welcome
         end
@@ -188,6 +195,44 @@ def self.display_account_info
     puts "City: #{@@user.city}"
     puts "Email: #{@@user.email}"
 end
+
+
+def self.analytics_page
+    answer = @@prompt.select("Welcome to the analytics page! Which statistics would you like to view? (Don't forget to scroll!!)",["Most Popular Artist","Your Favorite Genres", "Most Connected User", "Most Obscure Artist", "Most Popular Genre", "Average User Connection Count", "Return to Main Menu"],required: true)
+        case answer
+            when "Most Popular Artist"
+                Artist.most_popular
+
+                
+            when "Your Favorite Genres"
+                puts "Here are your favorite genres based on the artists in yout Top 10."
+        
+                u_genres = @@user.genres
+                g_names = u_genres.map {|g| g.name}
+                puts g_names
+
+            when "Most Connected User"
+                User.well_connected
+
+            when "Most Obscure Artist"
+                Artist.most_obscure
+
+            when "Most Popular Genre"
+                Genre.most_common
+
+            when "Average User Connection Count"
+                User.average_connections
+                
+            else
+                puts "Returning to the main menu."
+                sleep(2)
+                self.inner_menu 
+        end
+
+    sleep(2)
+    self.analytics_page    
+end
+
 
 def self.print_genres(user)
 

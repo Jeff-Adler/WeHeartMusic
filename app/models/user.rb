@@ -49,6 +49,23 @@ class User < ActiveRecord::Base
         genres.map{|genre| genre.name}.uniq
     end
 
+    def self.well_connected
+        most_connects = self.all.map {|u| u.connections.count}
+        
+        #having issues with duplicates
+        self.all.select do |u|
+            if u.connections.count == most_connects.max
+                puts "Our most well-connected user is currently #{u.name} with an impressive #{u.connections.count} connections. Total flirt right here."
+            end
+        end
+    end
+
+
+    def self.average_connections
+        average = self.all.map {|u| u.connections.count}
+        #binding.pry
+        puts "The average user has #{average.sum(0.0)/average.count} connection(s)."
+    end
 
 
  end
