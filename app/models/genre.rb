@@ -6,10 +6,9 @@ class Genre < ActiveRecord::Base
 
     def self.most_common
         most_c = self.all.map {|g| g.artist_genres.count}
-        
+        puts "The most popular genre(s) in the database are below!"
         self.all.select do |g| 
             if g.artist_genres.count == most_c.max
-            puts "The most popular genre(s) in the database are below!"
             puts g.name
             end
         end

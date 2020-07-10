@@ -17,21 +17,19 @@ class Artist < ActiveRecord::Base
     def self.most_popular
         most_p = self.all.map {|a| a.users.count}
         #binding.pry
-        self.all.select do |a| 
-            if a.users.count == most_p.max
-            puts "The most popular artist is currently #{a.name} with a whopping #{a.users.count} fans!"
-            end
+        most_p = self.all.select do |a| 
+            a.users.count == most_p.max
         end
+        puts "The most popular artist(s) are currently #{most_p.map{|a| a.name}.join(", ")} with a whopping #{most_p.map{|a| a.users.count}.uniq[0]} fans!"
     end
 
     def self.most_obscure
         least_pop = self.all.map {|a| a.popularity}
         
-        self.all.select do |a|
-            if a.popularity == least_pop.max
-                puts "The most obscure artist within our database is currently #{a.name}, ranked #{a.popularity} in popularity on Spotify."
-            end
+        most_o = self.all.select do |a|
+            a.popularity == least_pop.max
         end
+        puts "The most obscure artist(s) within our database are currently #{most_o.map{|a| a.name}.join(", ")}, ranked #{most_o.map{|a| a.popularity}.uniq[0]} in popularity on Spotify."
     end
 
 end
