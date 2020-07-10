@@ -42,17 +42,14 @@ class User < ActiveRecord::Base
     end
 
     def genres
-        genres = []
-        self.artists.each do |artist|
-            artist.genres.each do |genre|
-                if !(genres.any?{|g| g == genre})
-                    genres << genre
-                end
-            end
-        end
-        genres
+        self.artists.map { |artist| artist.genres}.flatten
+    end
+    
+    def genres_names
+        genres.map{|genre| genre.name}.uniq
     end
 
 
-end
 
+ end
+ 
