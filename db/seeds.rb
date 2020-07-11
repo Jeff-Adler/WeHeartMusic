@@ -21,7 +21,7 @@ def add_artistgenre_seed(artist_name)
 end
 
 
-def create_profile(song_array,user_details)
+def create_profile(artist_array,user_details)
     user = User.create(name: user_details[0], age: user_details[1], city: user_details[2], email: user_details[3])
 
     artist_array.each do |artist_name|
@@ -34,56 +34,60 @@ end
 
 #profile: user 1
 user= ["Monique Chance", 30, "Jersey","monique@totallyfake.com"]
-songs = ["Kanye West","J Cole","Chris Brown","Drake","Nicki Minaj","Jay-z","Summer Walker", "Jhene Aiko", "Dababy","Big Sean"]
-create_profile(songs,user)
+artists = ["Kanye West","J Cole","Chris Brown","Drake","Nicki Minaj","Jay-z","Summer Walker", "Jhene Aiko", "Dababy","Big Sean"]
+create_profile(artists,user)
 
 
 
 #profile: user 2
 user= ["Bridget Brito", 24, "Bronx","bridget@totallyfake.com"]
-songs = ["Bad Bunny","NCT 127","hasley","j cole","EXO","Childish Gambino","Billie Eilish","Fleetwood Mac","Jessie Reyez","6lack"]
-create_profile(songs,user)
+artists = ["Bad Bunny","NCT 127","hasley","j cole","EXO","Childish Gambino","Billie Eilish","Fleetwood Mac","Jessie Reyez","6lack"]
+create_profile(artists,user)
 
 #profile : user 3
 user= ["Sharina Aybar", 25, "Bronx","sharina@totallyfake.com"]
-songs = ["Circa Survive","j cole", "Mac Miller", "Earthgang", "eli sostre", "bryson tiller", "etta james","billie holiday",'kimbra',"gary moore"]
-create_profile(songs,user)
+artists = ["Circa Survive","j cole", "Mac Miller", "Earthgang", "eli sostre", "bryson tiller", "etta james","billie holiday",'kimbra',"gary moore"]
+create_profile(artists,user)
 
 #profile : user 4
 user= ["Crystal Santiago", 26, "Bronx","crystal@totallyfake.com"]
-songs = ["george ezra", "vance joy","bad bunny","big wild","summer walker","hobo johnson","bazzi","post malone","travis scott",'ozuna']
-create_profile(songs,user)
+artists = ["george ezra", "vance joy","bad bunny","big wild","summer walker","hobo johnson","bazzi","post malone","travis scott",'ozuna']
+create_profile(artists,user)
 
 #profile : user 5
 user= ["Kate McDonnell", 26, "Ireland","kate@totallyfake.com"]
-songs = ["the 1975","cardi b","dua lipa","artic monkeys","gun n roses","bruno mars","beyonce","fleetwood mac","lady gaga","Michael jackson"]
-create_profile(songs,user)
+artists = ["the 1975","cardi b","dua lipa","artic monkeys","gun n roses","bruno mars","beyonce","fleetwood mac","lady gaga","Michael jackson"]
+create_profile(artists,user)
 
 #profile: user 6
 user= ["Seongkon Kang", 30, "Flushing","seong@totallyfake.com"]
-songs = ["slowthai","grace craters","lil simz","dermot kennedy","lewis capaldi","ry x","mf doom","four tet","dj okawari","run the jewels"]
-create_profile(songs,user)
+artists = ["slowthai","grace craters","lil simz","dermot kennedy","lewis capaldi","ry x","mf doom","four tet","dj okawari","run the jewels"]
+create_profile(artists,user)
 
 #profile: user 7
 user= ["Edwin Casado", 28, "West New York","edwin@totallyfake.com"]
-songs = ["heroes del silencio","the smashing pumpkins","toque profundo",'tabutek',"iron maiden","coheed and cambria","radiohead","soda stereo","la ley","the shins"]
-create_profile(songs,user)
+artists = ["heroes del silencio","the smashing pumpkins","toque profundo",'tabutek',"iron maiden","coheed and cambria","radiohead","soda stereo","la ley","the shins"]
+create_profile(artists,user)
 
 #profile: user 8
 user= ["Andrew", 30, "Chicago","andrew@totallyfake.com"]
-songs = ["Dropkick Murphys","the fratellis","kanye","queen","Coldplay","led zepplin","the black keys","muse","the 1975","red hot chili peppers"]
-create_profile(songs,user)
+artists = ["Dropkick Murphys","the fratellis","kanye","queen","Coldplay","led zepplin","the black keys","muse","the 1975","red hot chili peppers"]
+create_profile(artists,user)
 
 #profile: user 9
 user= ["Steve", 33, "Metro North","steve@totallyfake.com"]
-songs = ["Streetlight Manifesto","The Offspring","Less than Jake","Sublime","No Doubt","weezer","Catch 22","nirvana","dead kennedys","coheed and cambria"]
-create_profile(songs,user)
+artists = ["Streetlight Manifesto","The Offspring","Less than Jake","Sublime","No Doubt","weezer","Catch 22","nirvana","dead kennedys","coheed and cambria"]
+create_profile(artists,user)
 
 #profile: user 10
 user= ["Cool Mike", 69, "Coolsville","coolmike@totallyfake.com"]
-songs = ["Boogaloo Assassins","The Cat Empire","celia cruz","bruno mars","southern culture on the skids","metallica","Waka flocka flame","the hives","fulanito","nujabes"]
-create_profile(songs,user)
+artists = ["Boogaloo Assassins","The Cat Empire","celia cruz","bruno mars","southern culture on the skids","metallica","Waka flocka flame","the hives","fulanito","nujabes"]
+create_profile(artists,user)
 
+#profile: user 11
+user= ["Isabel", 24, "Coolsville","coolmike@totallyfake.com"]
+artists = ["Juan luis guerra","my chemical romance","AFI","maleek berry","mc kevin","led zepplin","damian & brothers","linkin park","the offsprings","Less than Jake"]
+create_profile(artists,user)
 
 
 # #profile: alt-rock fan

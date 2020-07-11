@@ -6,14 +6,12 @@ class User < ActiveRecord::Base
     has_many :user_artists
     has_many :artists, through: :user_artists
 
-<<<<<<< HEAD
     #This method will tell your matches
     def matches
         connectees.select do |element|
             Connection.match?(self,element)
         end
     end
-=======
     # def matches
     # end
 
@@ -35,8 +33,6 @@ class User < ActiveRecord::Base
         end
     end
 
-end
->>>>>>> f44be06c12054fe2ce2f9c07e2f68b5c94e47560
 
     def connectee?(prospect)   
         Connection.all.any? do |element|
