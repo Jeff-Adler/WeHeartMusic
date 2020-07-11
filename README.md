@@ -35,9 +35,11 @@ This gem ensures API access credentials remain confidential, but are easy to ins
 The Spotify Dating App has a lot of great features at your disposal. Here are some quick tips so that you get the most out of the application:
 
 - Retrieve your Spotify API ID and Secret Key from https://developer.spotify.com/documentation/web-api/. Follow their directions to receive an ID and Secret Key. You will need a Spotify account (but a free account will suffice).
-- Create a file in the root directory of the program '.env' and enter the following text in the file:
+- Create a file in the root directory of the program called '.env' and enter the following text in the file:
+```
     export SPOTIFY_ID = #Spotify client id here#
     export SPOTIFY_SECRET = #Spotify secret key#
+```
 - From your terminal, run '% bundle install' to install the gems mentioned above (and additional standard Ruby gems)
 - To start the application, execute the following in the terminal: % ruby bin/run.rb
     - Note: if you would like to try out the application with a pre-seeded set of users, with info pulled from Spotify API, run '% rake seed' before running '% ruby bin/run.rb'. It will take a few seconds to seed the database.
