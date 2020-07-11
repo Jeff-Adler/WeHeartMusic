@@ -1,15 +1,19 @@
 class Artist < ActiveRecord::Base
     has_many :user_artists
     has_many :users, through: :user_artists
+<<<<<<< HEAD
     has_many :artist_genres
     has_many :genres, through: :artist_genres
     #validates_uniqueness_of :name
+=======
+>>>>>>> f44be06c12054fe2ce2f9c07e2f68b5c94e47560
 
     def self.verify_artist(artist)
         check= self.all.find_by(name: artist.name)
         if check
             check
         else
+<<<<<<< HEAD
             Artist.create(name: artist.name, popularity: artist.popularity)
         end
     end
@@ -34,3 +38,11 @@ class Artist < ActiveRecord::Base
 
 end
 
+=======
+        Artist.create(name: artist.name, popularity: artist.popularity)
+
+        end
+    end
+
+end
+>>>>>>> f44be06c12054fe2ce2f9c07e2f68b5c94e47560

@@ -6,12 +6,37 @@ class User < ActiveRecord::Base
     has_many :user_artists
     has_many :artists, through: :user_artists
 
+<<<<<<< HEAD
     #This method will tell your matches
     def matches
         connectees.select do |element|
             Connection.match?(self,element)
         end
     end
+=======
+    # def matches
+    # end
+
+    def self.email_exist?(email)
+        if self.all.find_by(email: email)
+            true
+        end
+    end
+
+        
+
+    def self.verify_user(name,age,city,email)
+        check= self.email_exist?(email)
+        if check
+            check
+        else
+            User.create(name: name, age: age, city: city, email: email)
+
+        end
+    end
+
+end
+>>>>>>> f44be06c12054fe2ce2f9c07e2f68b5c94e47560
 
     def connectee?(prospect)   
         Connection.all.any? do |element|
