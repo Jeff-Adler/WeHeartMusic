@@ -26,13 +26,21 @@ This gem creates a visually appealing CLI. Most of the functionality of the CLI 
 - You can also install it yourself in the terminal like so: gem install 'tty-prompt'
 - For more information on documentation, check out the site <a href="https://github.com/piotrmurach/tty-prompt">here</a>
 
+### Dotenv
+This gem ensures API access credentials remain confidential, but are easy to insert for any users running the program. Learn more about the gem here: https://github.com/bkeepers/dotenv
+
 
 ## Guide
 
 The Spotify Dating App has a lot of great features at your disposal. Here are some quick tips so that you get the most out of the application:
 
-- Retrieve your Spotify API ID and Secret and enter "RSpotify::authenticate("id" ,"secret key")" into lib/spotify_setup.rb
-- To start the application, execute the following in the terminal: ruby bin/run.rb
+- Retrieve your Spotify API ID and Secret Key from https://developer.spotify.com/documentation/web-api/. Follow their directions to receive an ID and Secret Key. You will need a Spotify account (but a free account will suffice).
+- Create a file in the root directory of the program '.env' and enter the following text in the file:
+    export SPOTIFY_ID = #Spotify client id here#
+    export SPOTIFY_SECRET = #Spotify secret key#
+- From your terminal, run '% bundle install' to install the gems mentioned above (and additional standard Ruby gems)
+- To start the application, execute the following in the terminal: % ruby bin/run.rb
+    - Note: if you would like to try out the application with a pre-seeded set of users, with info pulled from Spotify API, run '% rake seed' before running '% ruby bin/run.rb'. It will take a few seconds to seed the database.
 - This will take you to the log-in screen, where you can create a new user, log-in if you are a returning user or exit the application. NOTE: this is the only menu where you can exit the application.
 - After creating a new user/adding artists or logging in as an existing user with your credentials, you'll be taken to the main menu. From here you have the following options:
     * View or Change your Top 10: View or delete artists from your Top 10 list.
