@@ -9,7 +9,7 @@ module Cli
 def self.welcome
 
 @@prompt = TTY::Prompt.new
-
+system "clear"
 self.logo
 puts <<-welcomingtext
 Welcome to the Spotify Dating App!
@@ -89,7 +89,13 @@ def self.change_top_10
     response = @@prompt.select("Are you sure you'd like to delete #{artist_to_change.name} from your Top 10? \n", ["Yes","No, take me back to the Main Menu"], required: true)
     case response
     when "Yes"
-        userartist_to_delete.destroy 
+        userartist_to_delete.destroy
+        binding.pry
+        if !UserArtist.find_by(artist_id: artist_to_change)
+        Artist.find_by(id: userartist_to_delete.artist_id).destroy
+        end
+
+
     end
 end
 
@@ -134,7 +140,7 @@ end
 
     def self.inner_menu
         system "clear"
-        answer = @@prompt.select("Welcome to the menu #{@@user.name}, what would you like to do? (Don't forget to scroll!!)", ["View or Change Top 10", "Add Artists", "View Genres","View Connections and Matches","Find Connections", "See my account information","Return to login screen"], required: true)
+        answer = @@prompt.select("Welcome to the menu #{@@user.name}, what would you like to do? (Don't forget to scroll!!)", ["View or Change Top 10", "Add Artists", "View Genres","View Connections and Matches","Find Connections", "See my account information","Analytics","Return to login screen"], required: true)
         case answer
         when "View or Change Top 10"
             

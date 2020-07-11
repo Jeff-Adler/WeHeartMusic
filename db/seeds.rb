@@ -61,7 +61,7 @@ create_profile(artists,user)
 
 #profile: user 6
 user= ["Seongkon Kang", 30, "Flushing","seong@totallyfake.com"]
-artists = ["slowthai","grace craters","lil simz","dermot kennedy","lewis capaldi","ry x","mf doom","four tet","dj okawari","run the jewels"]
+artists = ["slowthai","grace craters","little simz","dermot kennedy","lewis capaldi","ry x","mf doom","four tet","dj okawari","run the jewels"]
 create_profile(artists,user)
 
 #profile: user 7
@@ -70,8 +70,8 @@ artists = ["heroes del silencio","the smashing pumpkins","toque profundo",'tabut
 create_profile(artists,user)
 
 #profile: user 8
-user= ["Andrew", 30, "Chicago","andrew@totallyfake.com"]
-artists = ["Dropkick Murphys","the fratellis","kanye","queen","Coldplay","led zepplin","the black keys","muse","the 1975","red hot chili peppers"]
+user= ["Andrew Mavricos", 30, "Chicago","andrew@totallyfake.com"]
+artists = ["Dropkick Murphys","queen","acdc","nwa","run dmc","eminem","aerosmith","journey","stevie nix","led zeppelin"]
 create_profile(artists,user)
 
 #profile: user 9
