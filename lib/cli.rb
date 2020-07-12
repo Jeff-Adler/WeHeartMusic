@@ -140,7 +140,7 @@ end
 
     def self.inner_menu
         system "clear"
-        answer = @@prompt.select("Welcome to the menu #{@@user.name}, what would you like to do? (Don't forget to scroll!!)", ["View or Change Top 10", "Add Artists", "View Genres","View Connections and Matches","Find Connections", "See my account information","Analytics","Return to login screen"], required: true)
+        answer = @@prompt.select("Welcome to the menu #{@@user.name}, what would you like to do? (Don't forget to scroll!!)", ["View or Change Top 10", "Add Artists","View Connections and Matches","Find Connections", "See my account information","Analytics","Return to login screen"], required: true)
         case answer
         when "View or Change Top 10"
             
@@ -170,10 +170,6 @@ end
             "Add Artists"
             self.choose_artist
 
-        when "View Genres"
-            puts "Based on your Top 10, your favorite genres are:"
-            self.print_genres(@@user)
-
         when "Find Connections"
             puts "Let's find people with similar music tastes to you!"
 
@@ -196,6 +192,18 @@ def self.display_account_info
     puts "Age: #{@@user.age}"
     puts "City: #{@@user.city}"
     puts "Email: #{@@user.email}"
+
+    answer = @@prompt.select("",["View Genres","Edit Profile","Back to Menu" ],required: true)
+    case answer
+    when "View Genres"
+        puts "Based on your Top 10, your favorite genres are:"
+        self.print_genres
+        sleep (4)
+    when "Edit Profile"
+        self.edit_profile
+    end
+
+        
 end
 
 
@@ -228,10 +236,10 @@ def self.analytics_page
 end
 
 
-def self.print_genres(user)
+def self.print_genres
 
-    User.find(@@user.id).genres.each do |genre|
-        puts "#{genre.name}"
+    @@user.genres_names.each do |genre|
+        puts "#{genre}"
     end
 end
 
@@ -304,6 +312,32 @@ def self.connect_or_pass(prospect)
         end
 
 end
+
+    def self.edit_profile
+        choices= {"Name?":"name","Age?":"age","City":"city","Email?":"email","Back to Menu?":"cancel"}
+        answer = @@prompt.select("Which would you like to edit",choices ,required: true)
+        binding.pry
+        if answer == "cancel"
+            self.display_account_info
+        end
+        answer2 = @@prompt.ask("Which would you like to change it to?",required: true)
+            case answer
+            when "email"
+                answer2 = answer2.downcase
+            when "age"
+                answer2 = answer2.to_i
+            else
+                answer2= answer2.capitalize
+            end
+            @@user.send("#{answer}=",answer2)
+            @@user.save
+            puts "information was updated"
+            sleep(2)
+    
+
+
+    end
+
 
 #This method will find a prospect for the user
 def self.find_prospects(user_1)

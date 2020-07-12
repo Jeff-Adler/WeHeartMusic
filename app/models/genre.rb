@@ -8,13 +8,6 @@ class Genre < ActiveRecord::Base
         puts "The most popular genre(s) in the database are below!"
         common_genres = self.all.max_by(3){|genre| genre.artist_genres.count}
         common_genres.each {|i| puts "#{i.name} - #{i.artist_genres.count} fans"}
-      
-
-        # self.all.select do |g| 
-        #     if g.artist_genres.count == most_c.max
-        #     puts g.name
-        #     end
-        #  end
     end
 
     def self.verify_genre(spotify_artist)

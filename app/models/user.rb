@@ -63,7 +63,9 @@ class User < ActiveRecord::Base
     end
 
     def genres
-        self.artists.map { |artist| artist.genres}.flatten
+        var = self.artists.map { |artist| artist.genres}.flatten
+        var.sort_by{|genre| var.count(genre)}.reverse
+  
     end
     
     def genres_names
