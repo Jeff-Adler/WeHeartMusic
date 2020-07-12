@@ -10,7 +10,7 @@ def self.welcome
 
 @@prompt = TTY::Prompt.new
 system "clear"
-self.logo
+Ascii.logo
 puts <<-welcomingtext
 Welcome to the Spotify Dating App!
 welcomingtext
@@ -24,7 +24,7 @@ when "New User"
     choose_artist
 when "Returning"
     system "clear"
-    self.singer
+    Ascii.singer
     self.returning_user
     self.inner_menu
 else
@@ -56,7 +56,7 @@ def self.new_user
 
     system "clear"
     puts "Great! Nice to meet you #{n}. We've successfully created an account for you. Now let's focus on building your Top 10 bands and get you closer to making some matches"
-    rock_hands
+    Ascii.rock_hands
     self.pause_time
 end
 
@@ -90,7 +90,7 @@ def self.change_top_10
     case response
     when "Yes"
         userartist_to_delete.destroy
-        binding.pry
+        
         if !UserArtist.find_by(artist_id: artist_to_change)
         Artist.find_by(id: userartist_to_delete.artist_id).destroy
         end
@@ -106,9 +106,8 @@ def self.view_top_10
     else    
         puts "Welcome to the Top 10 manager. Here are your Top 10 artists:"
 
-        User.find(@@user.id).artists.each do |artist|
-            puts artist.name
-        end
+        User.find(@@user.id).artists.each{|artist| puts artist.name}
+    
 
         var2 = @@prompt.select("Do you want to change your Top 10 or return to main menu?", ["Change Top 10","Return to Main Menu"],required: true)
         case var2
@@ -147,25 +146,7 @@ end
                 self.view_top_10
 
         when "View Connections and Matches"
-            if @@user.connectees == []
-                puts "You haven't made any connecions yet! Choose the Find Connections option from the main menu to find people with similar music tastes as you."
-            else
-                var = @@user.connectees.map{|connectee| connectee.name}
-
-                puts "Here is everyone you added to your connections:"
-                var.each do |name|
-                    puts name
-                end
-
-                #Need to vertify this works as intended
-                if @@user.matches != []
-                    puts "Here are the connection(s) that like you back. Send them an e-mail!"
-                    self.print_matches(@@user)
-                else
-                    puts "Sorry, no matches yet. Try to improve your playlist to find more connections. Someone is sure to connect back with you soon!"
-                    puts "Returning to main menu."
-                end
-            end
+            self.view_connections_and_matches
         when
             "Add Artists"
             self.choose_artist
@@ -210,6 +191,46 @@ def self.display_account_info
 
         
 end
+
+    def self.view_connections_and_matches
+        system "clear"
+        var = (@@user.connectees.map{|connectee| connectee.name} - Rejection.where(rejectee_id: @@user.id).map{|person| person.rejector.name}) - @@user.matches.map{|match| match.name}
+        if var.empty?
+            puts "You don't have any current open connections at the moment. Choose the Find Connections option from the main menu to find people with similar music tastes as you."
+        else
+            
+
+            puts "Here is everyone you added to your connections:"
+            var.each{|name| puts name }
+            
+        end
+
+            #Need to vertify this works as intended
+        if @@user.matches.empty?
+                puts "\nSorry, no matches yet. Try to improve your playlist to find more connections. Someone is sure to connect back with you soon!"
+                puts "Returning to main menu."
+        else
+            var = @@user.matches.map {|i| i.name}
+                puts "Here are the connection(s) that like you back."
+                answer = @@prompt.select("Who do you want to look further into?",var,required: true)
+                match = User.find_by(name: answer)
+                system "clear"
+                puts "Here is #{answer}'s  Top 10 Artists. These would be great conversation starters *wink**wink*\n"
+                match.artists.each{|artist| puts artist.name}
+                answer = @@prompt.select("Want to contact? Or go back?",{"Let's see #{match.name} contact information":"contact","Let's see my other matches":"view_connections_and_matches","Main Menu":"inner_menu"},required: true)
+                if answer == "contact"
+                    puts match.email
+                    sleep (4)
+                    self.inner_menu
+                end
+                self.send(answer)
+                    
+
+        end
+        
+    end
+
+
 
 
 def self.analytics_page
@@ -306,22 +327,23 @@ end
 
      #This method lets the user decide if they will connect with or reject a propsect
 def self.connect_or_pass(prospect)
-    answer = @@prompt.select("Would you like to connect or pass on this person?", ["Connect","Pass"], required: true)
+    answer = @@prompt.select("\nWould you like to connect or pass on this person?", ["Connect","Pass"], required: true)
     case answer
         when "Connect"
             Connection.create(connector: @@user, connectee: prospect, strength: connection_calculator(@@user,prospect))
-            puts "You connected with #{prospect.name}. Best of luck!"
+            puts "You just started a connection with #{prospect.name}. Check back later to see if they completed the connection with you. Best of luck!\n"
+            
         else
-            Rejection.create(rejector: @@user, rejectee: prospect, strength: connection_calculator(@@user,prospect))
-            puts "Picky, are we?"
+           test= Rejection.create(rejector: @@user, rejectee: prospect, strength: connection_calculator(@@user,prospect))
+            puts "I wasn't feeling their artist choice either... \n"
+           
         end
-
+        @@user = User.find(@@user.id)
 end
 
     def self.edit_profile
         choices= {"Name?":"name","Age?":"age","City":"city","Email?":"email","Back to Menu?":"cancel"}
         answer = @@prompt.select("Which would you like to edit",choices ,required: true)
-        binding.pry
         if answer == "cancel"
             self.display_account_info
         end
@@ -368,7 +390,7 @@ def self.find_prospects
     if temp_prospect == nil
         puts "Sorry, we could not find any prospects."
     else
-        puts "Your match is: #{temp_prospect.name}. Your connection strength with #{temp_prospect.name} is #{strength_counter.round(half: :up)}/10."
+        puts "\nYour match is: #{temp_prospect.name}. Your connection strength with #{temp_prospect.name} is #{strength_counter.round(half: :up)}/10."
         temp_prospect
     end
 end
@@ -392,7 +414,7 @@ def self.connection_calculator(user_1,user_2)
     if !(artist_matches.nil? || artist_matches.empty?) # = they do have artists in common
         
         artist_matches.each do |artist|
-            artist_score += (3 * ((125 - artist.popularity)/100.0))
+            artist_score += (3 * ((150 - artist.popularity)/100.0))
         end
 
     end
@@ -427,87 +449,5 @@ end
         system "clear"
  end
 
- def self.logo
-    puts <<-welcome
-              SpotifySpotifySpotifySpotify                 SpotifySpotifySpotifySpotify
-            ifySpotifySpotifySpotifySpotify            SpotifySpotifySpotifySpotifySpotify
-        ifySpotifySpotifySpotifySpotifySpotifySpo    tifySpotifySpotifySpotifySpotifySpotify
-       SpotifySpotifySpotifySpotifySpotifySpotifySpo  tifySpotifySpotifySpotifySpotifySpotify
-       ifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotify
-       SpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpot
-       ifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySp
-        otifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotify
-        SpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpoti
-        fySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpot
-          ifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotify
-            ySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotify
-             ifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpot
-              fySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotif
-                ySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotif
-                fySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpot
-                   ifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpoti
-                    fySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySp
-                      otifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySp
-                       otifySpotifySpotifySpotifySpotifySpotifySpotifySpotifySpotif
-                         ySpotifyifySpotifySpotifySpotifySpotifySpotifySpotifySpot
-                           ifySpotifySpotifySpotifySpotifySpotifySpotifySpotify
-                              SpotifySpotifySpotifySpotifySpotifySpotifySpot
-                                ifySpotifySpotifySpotifySpotifySpotifySpot
-                                    ifySpotifySpotifySpotifySpotifySpo
-                                    tifySpotifySpotifySpotifySpotify
-                                      SpotifySpotifySpotifySpotify
-                                            SpotifySpotify
-                                                Spotify
-welcome
- end
-
-   
-    
-    def self.rock_hands
-
-        puts <<-Rock
-    ░░░▄▀▀▀▄░░░░░░░░░░░░░▄▀▀▀▄░░░░░░
-    ░░░█░░░██░░░░░░░░░░░░█░░░█░░░░░░
-    ░░░▀█░░░█░░░░░░░░░░░█▀░░░█░░░░░░
-    ░░░░█░░░▀█▄▄▄▄░▄▄▄▄▄█░░░█▀░░░░░░
-    ░░░░█░░░░██░░▀█▀░░██▀░░▄█░░░░░░░
-    ░░░░░█░░░▀█░░░█░░░██░░░█░░░░░░░░
-    ░░░░░█░░░░█░░░█░░░█░░░░█░░░░░░░░
-    ░░░░▄█░░░░█▄░▄█▄░▄█░░▄█▀▀██▄░░░░
-    ░░░░█░░░░░░▀▀▀▀▀▀▀░░░█▄░░░░█▄░░░
-    ░░░░█░░░░░░░░░░░░░░░░▀█▄▄░░░█░░░
-    ░░░░█░░░░░░░░░░░░░░░░░░░░░░▄█░░░
-    ░░░░█░░░░░░░░░░░░░░░░░░░░░░█░░░░
-    ░░░░░█░░░░░░░░░░░░░░░░░░░▄██░░░░
-    ░░░░░▀▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄██▀▀▀░░░░░░
-    ░░░░░░█████████████▀░░░░░░░░░░░░
-    ░░░░░░██▀▀█████████░░░░░░░░░░░░░
-    Rock
-    end
-
-    def self.singer
-        puts <<-art
-        @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-        @@@@@@@@@@@@@@@@@@@             @@@@@@@@@@@@@@@@@@
-        @@@@@@@@@@@@@@@@                   @@@@@@@@@@@@@@@
-        @@@@@@@@@@@@@@                          @@@@@@@@@@
-        @@@@@@@@@@@@@@#                         @@@@@@@@@@
-        @@@@@@@@@@@@@@@                         .@@@@@@@@@
-        @@@@@@@@@@@@@@                         *(&@@@@@@@@
-        @@@@@@@@@@@@@@@%                     .(@@@@@@@@@@@
-        @@@@@@@@@@@@@@                      @@#@@@@@@@@@@@
-        @@@@@@@@@&                          @@@@@@@@@@@@@@
-        @@@@@@.                           * @@@@@@@@@@@@@@
-        @@@,                             @@@@@@@@@@@@@@@@@
-        /                      @@@%   @@@@@@@@     @@@@@@@
-                            @@@@@@@@@@@@@@@@         @@@
-                            @@@@@@@@@@@@@@@@@@         (
-                            @@@@@@@@@@@@@@@          ,/
-                                @@@@@@@@@@@@@@           @
-                                @@@@@@@@@@@@@@&          @
-                                @@@@@@@@@@@@         @@  
-        @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                         
-    art
-    end
 
 end
