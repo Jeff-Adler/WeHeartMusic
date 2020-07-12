@@ -121,7 +121,7 @@ end
 def self.find_connections
 
     #Presents the user in the database with strongest connection, that you have not yet encountered
-    prospect = self.find_prospects(@@user)
+    prospect = self.find_prospects
 
     #This prompts you to connect or reject with prospect, assuming a prospect was found     
     if prospect != nil
@@ -188,9 +188,11 @@ end
     end
 
 def self.display_account_info
+    system "clear"
     puts "Name: #{@@user.name}"
     puts "Age: #{@@user.age}"
     puts "City: #{@@user.city}"
+
     puts "Email: #{@@user.email}"
 
     answer = @@prompt.select("",["View Genres","Edit Profile","Back to Menu" ],required: true)
@@ -198,7 +200,10 @@ def self.display_account_info
     when "View Genres"
         puts "Based on your Top 10, your favorite genres are:"
         self.print_genres
-        sleep (4)
+        answer=@@prompt.select("\nReady to go return account information?",{"Back to Account Info": "display_account_info","Go to Menu":"inner_menu"})
+        sleep (2)
+        self.send(answer)
+        
     when "Edit Profile"
         self.edit_profile
     end
@@ -340,18 +345,18 @@ end
 
 
 #This method will find a prospect for the user
-def self.find_prospects(user_1)
+def self.find_prospects
     strength_counter = 0
     temp_prospect = nil
     User.all.each do |user|
     #This makes sure that a) we are not comparing the user to itself and 
     #b) we are ignoring prospects the user already connected or rejected
         
-        if (user == user_1) || user_1.connectee?(user) ||  user_1.rejectee?(user)
+        if (user == @@user) || @@user.connectee?(user) ||  @@user.rejectee?(user)
             next
         else
         
-            score = self.connection_calculator(user_1,user)
+            score = self.connection_calculator(@@user,user)
             if strength_counter < score
                 strength_counter = score
                 temp_prospect = user
@@ -387,7 +392,7 @@ def self.connection_calculator(user_1,user_2)
     if !(artist_matches.nil? || artist_matches.empty?) # = they do have artists in common
         
         artist_matches.each do |artist|
-            artist_score += (3 * (100.0 - artist.popularity)/100.0)
+            artist_score += (3 * ((125 - artist.popularity)/100.0))
         end
 
     end
@@ -395,8 +400,9 @@ def self.connection_calculator(user_1,user_2)
     #RIGHT NOW GENRE WILL ALSO COMPUTE GENRES FROM OVERLAPPING ARTISTS 
 
     #compare-genre condition
-    genre_score += 1.0 - ((user_1.genres - user_2.genres).size / user_1.genres.size)
-    genre_score *= 3
+   genre_formula =  (1.0 - ((user_1.genres - user_2.genres).size.to_f / user_1.genres.size))
+    genre_score += (10 * genre_formula)
+   
 
     #This ensures strength score is not greater than 10
     if artist_score + genre_score > 10

@@ -85,9 +85,20 @@ artists = ["Boogaloo Assassins","The Cat Empire","celia cruz","bruno mars","sout
 create_profile(artists,user)
 
 #profile: user 11
-user= ["Isabel", 24, "Coolsville","coolmike@totallyfake.com"]
+user= ["Isabel", 24, "Utah","isabel@totallyfake.com"]
 artists = ["Juan luis guerra","my chemical romance","AFI","maleek berry","mc kevin","led zepplin","damian & brothers","linkin park","the offsprings","Less than Jake"]
 create_profile(artists,user)
+
+#profile: user 12
+user= ["Vincent", 25, "Manhattan","vincent@totallyfake.com"]
+artists = ["Bruno Mars","BTS","IU","Billie Eilish","Drake","Khalid","Slander","Linkin Park","Coldplay","imagine dragons"]
+create_profile(artists,user)
+
+#profile: user 13
+user= ["Luis Rios", 28, "Jamaica Ave","luisrios@totallyfake.com"]
+artists = ["Incubus","the strokes","blink 182","Bruno Mars","j cole","jaden smith","neon trees","mumford and sons","Rage against the machine","System of a down"]
+create_profile(artists,user)
+
 
 
 # #profile: alt-rock fan
