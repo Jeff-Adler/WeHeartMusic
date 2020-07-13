@@ -139,6 +139,7 @@ end
 
     def self.inner_menu
         system "clear"
+        Ascii.headphones
         answer = @@prompt.select("Welcome to the menu #{@@user.name}, what would you like to do? (Don't forget to scroll!!)", ["View or Change Top 10", "Add Artists","View Connections and Matches","Find Connections", "See my account information","Analytics","Return to login screen"], required: true)
         case answer
         when "View or Change Top 10"
@@ -170,6 +171,7 @@ end
 
 def self.display_account_info
     system "clear"
+    Ascii.notes
     puts "Name: #{@@user.name}"
     puts "Age: #{@@user.age}"
     puts "City: #{@@user.city}"
@@ -211,7 +213,7 @@ end
                 puts "Returning to main menu."
         else
             var = @@user.matches.map {|i| i.name}
-                puts "Here are the connection(s) that like you back."
+                puts "Here are the matches that like you back."
                 answer = @@prompt.select("Who do you want to look further into?",var,required: true)
                 match = User.find_by(name: answer)
                 system "clear"

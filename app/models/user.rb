@@ -78,7 +78,7 @@ class User < ActiveRecord::Base
          most_u = self.all.select do |u|
             u.connections.count == most_connects.max
         end
-        puts "Our biggest flirt(s) are currently #{most_u.map{|u| u.name}.join(", ")} with an impressive #{most_u.map{|u| u.connections.count}.uniq[0]} connections. Go get'em tiger(s)."
+        puts "\nOur biggest flirt(s) are currently #{most_u.map{|u| u.name}.join(", ")} with an impressive #{most_u.map{|u| u.connections.count}.uniq[0]} connections. Go get'em tiger(s).\n"
     end
 
 
