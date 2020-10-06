@@ -1,4 +1,4 @@
-# spotify_dating_app
+# Spotify Dating App
 
 Lovers of music and lovers of love, look no further. The Spotify Dating App is here to connect you to other users who share the same musical interests as yourself. Simply create a profile, add artists to your Top 10 list and search for connections. It's as easy as a-one, two, a-one, two, three, four!
 
